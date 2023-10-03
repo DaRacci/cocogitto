@@ -27,6 +27,8 @@ pub enum Git2Error {
     TagError(TagError),
     GitHookNonZeroExit(i32),
     InvalidCommitRangePattern(String),
+    SshProgramError(String),
+    SshError(String),
 }
 
 #[derive(Debug)]
@@ -104,7 +106,7 @@ impl Display for Git2Error {
                 writeln!(f, "failed to get repository HEAD")
             }
             Git2Error::PeelToCommitError(_) => {
-                writeln!(f, "failed to peel git object to commit",)
+                writeln!(f, "failed to peel git object to commit", )
             }
             Git2Error::CommitNotFound(_) => writeln!(f, "commit not found"),
             Git2Error::CommitterNotFound => writeln!(f, "unable to get committer"),
@@ -126,6 +128,12 @@ impl Display for Git2Error {
             Git2Error::InvalidCommitRangePattern(pattern) => {
                 writeln!(f, "invalid commit range pattern: `{pattern}`")
             }
+            Git2Error::SshProgramError(_) => {
+                writeln!(f, "there was a problem while executing the ssh program")
+            }
+            Git2Error::SshError(_) => {
+                writeln!(f, "error while signing with ssh")
+            }
         }?;
 
         match self {
@@ -138,7 +146,9 @@ impl Display for Git2Error {
             | Git2Error::StatusError(err)
             | Git2Error::Other(err)
             | Git2Error::CommitNotFound(err) => writeln!(f, "\ncause: {err}"),
-            Git2Error::GpgError(err) => writeln!(f, "\ncause: {err}"),
+            Git2Error::GpgError(err)
+            | Git2Error::SshProgramError(err)
+            | Git2Error::SshError(err) => writeln!(f, "\ncause: {err}"),
             Git2Error::TagError(err) => writeln!(f, "\ncause: {err}"),
             Git2Error::IOError(err) => writeln!(f, "\ncause: {err}"),
             _ => fmt::Result::Ok(()),
