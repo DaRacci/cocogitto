@@ -129,6 +129,9 @@ impl CocoGitto {
             self.repository.create_tag(&bump.new_version.prefixed_tag)?;
         }
 
+        // Run global post hooks
+        self.run_hooks(HookRunOptions::post_bump().hook_profile(hooks_config))?;
+
         // Run per package post hooks
         for bump in bumps {
             let package = SETTINGS
@@ -144,9 +147,6 @@ impl CocoGitto {
                     .package(&bump.package_name, package),
             )?;
         }
-
-        // Run global post hooks
-        self.run_hooks(HookRunOptions::post_bump().hook_profile(hooks_config))?;
 
         Ok(())
     }
