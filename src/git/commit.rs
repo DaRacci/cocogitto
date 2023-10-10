@@ -266,7 +266,7 @@ mod test {
         let repo = Repository::open(".")?;
 
         // Act
-        let oid = repo.commit("feat: a test commit", true);
+        let oid = repo.commit("feat: a test commit", true, false);
 
         // Clean up
         run_cmd!(
