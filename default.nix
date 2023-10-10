@@ -30,6 +30,7 @@ let
       "rust-src"
       "clippy-preview"
       "rustfmt-preview"
+      "llvm-tools-preview"
     ])
   ];
 
